@@ -1,0 +1,35 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
+<script>
+    var socket = io.connect('ws://localhost:9999', { transports: ['websocket'] });
+    socket.on('connect', function () {
+        console.log('connected');
+        //get socket id
+        console.log(socket.id);
+       //send socket id to server
+        socket.emit('clientSocketId', socket.id);
+
+
+
+    });
+    var user = []
+   
+    socket.emit('echo', { text: 'Lamloooas.' }, function (response) {
+        console.log(response);
+    });
+
+    socket.on('echo', function (data) {
+            console.log("we echoed: " + data.text);
+        });
+
+    socket.emit('sample', { text: "Here's some user data..." }, function (response) {
+        console.log(response);
+    });
+    //pass connection id as body to server on newConn endpoint
+    var socketId = socket.id;
+    socket.emit('newConn', { text: "Here's some user data...", body: { id: socketId } }, function (response) {
+        console.log(response);
+    });
+
+
+
+</script>
