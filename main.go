@@ -15,7 +15,7 @@ func init() {
   })
   gosf.Listen("sample", myFirstController)
 
-  //listen to connection event from client
+  //listen to new socket connection event from client
     gosf.Listen("newConn", newConnController)
 
   gosf.OnConnect(func(client *gosf.Client, request *gosf.Request) {
@@ -23,8 +23,7 @@ func init() {
    
 
 })
-  gosf.RegisterPlugin(new(Plugin))
-	log.Println("Sample Plugin Initialized")
+
 }
 
 func main() {
@@ -58,27 +57,17 @@ func myFirstController(client *gosf.Client, request *gosf.Request) *gosf.Message
   
 }
 func newConnController(client *gosf.Client, request *gosf.Request) *gosf.Message {
-  log.Printf("New Connection Details:")
-  var statement string
+  log.Printf("New Connection Details received:")
+  var socket_id string
 
   // Parsing arguments in the body element
-  if val, ok := request.Message.Body["id"]; ok {
-    statement = val.(string)
+  if val, ok := request.Message.Body["socketId"]; ok {
+    socket_id = val.(string)
   }
  var text = request.Message.Text
  fmt.Println(text)
   //print out the id
-  log.Printf("here is the %v",statement)
+  log.Printf("Latest Newly Connected Socket ID is ---- %v",socket_id)
   //return response
-  return gosf.NewSuccessMessage("New Connection Details Sent To Server")
+  return gosf.NewSuccessMessage("Socket ID received By Server")
 }
-/** ASPECT **/
-
-// Plugin is the aspect oriented element required by the modular plugin framework
-type Plugin struct{}
-
-// Activate is an aspect-oriented modular plugin requirement
-func (p Plugin) Activate(app *gosf.AppSettings) {}
-
-// Deactivate is an aspect-oriented modular plugin requirement
-func (p Plugin) Deactivate(app *gosf.AppSettings) {}

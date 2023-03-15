@@ -1,13 +1,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
 <script>
     var socket = io.connect('ws://localhost:9999', { transports: ['websocket'] });
+   //once connected, notify server by sending socket ID
     socket.on('connect', function () {
         console.log('connected');
         //get socket id
         console.log(socket.id);
+        var socketId = socket.id;
        //send socket id to server
-        socket.emit('clientSocketId', socket.id);
 
+       //the body index can contain any data you want to send to the server in key-value pairs
+        socket.emit('newConn', { text: "Sending socket ID...", body: { socketId : socketId } }, function (response) {
+            console.log(response);
+        });
 
 
     });
@@ -24,12 +29,5 @@
     socket.emit('sample', { text: "Here's some user data..." }, function (response) {
         console.log(response);
     });
-    //pass connection id as body to server on newConn endpoint
-    var socketId = socket.id;
-    socket.emit('newConn', { text: "Here's some user data...", body: { id: socketId } }, function (response) {
-        console.log(response);
-    });
-
-
 
 </script>
